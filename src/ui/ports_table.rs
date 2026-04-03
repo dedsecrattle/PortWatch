@@ -34,26 +34,31 @@ pub fn render(f: &mut Frame, area: Rect, state: &AppState, theme: &Theme) {
                 _ => theme.other_state,
             };
 
+            let protocol_style = match port.protocol {
+                crate::models::Protocol::Tcp => theme.tcp,
+                crate::models::Protocol::Udp => theme.udp,
+            };
+
             Row::new(vec![
                 Cell::from(if port.local_addr == "0.0.0.0" || port.local_addr == "::" {
                     "*".to_string()
                 } else {
                     port.local_addr.clone()
-                }),
-                Cell::from(port.local_port.to_string()),
-                Cell::from(port.protocol.to_string()),
+                }).style(theme.address),
+                Cell::from(port.local_port.to_string()).style(theme.port),
+                Cell::from(port.protocol.to_string()).style(protocol_style),
                 Cell::from(port.state.to_string()).style(state_style),
                 Cell::from(
                     port.process_name
                         .as_deref()
                         .unwrap_or("-")
                         .to_string(),
-                ),
+                ).style(theme.process_name),
                 Cell::from(
                     port.pid
                         .map(|p| p.to_string())
                         .unwrap_or_else(|| "-".to_string()),
-                ),
+                ).style(theme.pid),
             ])
         })
         .collect();
@@ -82,9 +87,12 @@ pub fn render(f: &mut Frame, area: Rect, state: &AppState, theme: &Theme) {
     .header(header)
     .block(
         Block::default()
-            .title(title)
+            .title(ratatui::text::Span::styled(
+                format!(" {} ", title),
+                theme.title,
+            ))
             .borders(Borders::ALL)
-            .border_style(theme.border),
+            .border_style(theme.border_focused),
     )
     .row_highlight_style(theme.selected);
 
