@@ -1,5 +1,9 @@
 # PortWatch
 
+[![Crates.io](https://img.shields.io/crates/v/portwatch.svg)](https://crates.io/crates/portwatch)
+[![License](https://img.shields.io/crates/l/portwatch.svg)](https://github.com/dedsecrattle/PortWatch#license)
+[![Downloads](https://img.shields.io/crates/d/portwatch.svg)](https://crates.io/crates/portwatch)
+
 A cross-platform TUI (Terminal User Interface) for monitoring network ports and managing processes. Built with Rust for performance and portability.
 
 ## Features
@@ -13,9 +17,17 @@ A cross-platform TUI (Terminal User Interface) for monitoring network ports and 
 
 ## Installation
 
+### From crates.io (Recommended)
+
+```bash
+cargo install portwatch
+```
+
 ### From Source
 
 ```bash
+git clone https://github.com/dedsecrattle/PortWatch
+cd PortWatch
 cargo install --path .
 ```
 
