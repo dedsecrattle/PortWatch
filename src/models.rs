@@ -75,24 +75,82 @@ impl PortRecord {
         
         let filter_lower = filter.to_lowercase();
         
+        // Match port number (exact or partial)
         if let Ok(port) = filter.parse::<u16>() {
             if self.local_port == port {
                 return true;
             }
         }
         
+        // Partial match on port number as string
+        if self.local_port.to_string().contains(&filter_lower) {
+            return true;
+        }
+        
+        // Match local address
+        if self.local_addr.to_lowercase().contains(&filter_lower) {
+            return true;
+        }
+        
+        // Match remote address
+        if let Some(ref addr) = self.remote_addr {
+            if addr.to_lowercase().contains(&filter_lower) {
+                return true;
+            }
+        }
+        
+        // Match remote port
+        if let Some(port) = self.remote_port {
+            if port.to_string().contains(&filter_lower) {
+                return true;
+            }
+        }
+        
+        // Match protocol
         if self.protocol.to_string().to_lowercase().contains(&filter_lower) {
             return true;
         }
         
+        // Match state
+        if self.state.to_string().to_lowercase().contains(&filter_lower) {
+            return true;
+        }
+        
+        // Match process name
         if let Some(ref name) = self.process_name {
             if name.to_lowercase().contains(&filter_lower) {
                 return true;
             }
         }
         
-        if self.state.to_string().to_lowercase().contains(&filter_lower) {
-            return true;
+        // Match PID
+        if let Some(pid) = self.pid {
+            if pid.to_string().contains(&filter_lower) {
+                return true;
+            }
+        }
+        
+        // Match user
+        if let Some(ref user) = self.user {
+            if user.to_lowercase().contains(&filter_lower) {
+                return true;
+            }
+        }
+        
+        // Match executable path
+        if let Some(ref exe) = self.exe {
+            if let Some(exe_str) = exe.to_str() {
+                if exe_str.to_lowercase().contains(&filter_lower) {
+                    return true;
+                }
+            }
+        }
+        
+        // Match command line arguments
+        for arg in &self.cmdline {
+            if arg.to_lowercase().contains(&filter_lower) {
+                return true;
+            }
         }
         
         false
