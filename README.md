@@ -95,6 +95,9 @@ If an older file exists at **`~/.config/portwatch/alerts.json`**, it is still lo
 
 You can edit rules in the TUI with **`E`** (see on-screen hints) or edit the JSON file directly.
 
+- **Example config:** [`examples/alerts.example.json`](examples/alerts.example.json) — copy and adapt to your config path.
+- **Field reference:** [`docs/alert-rules.md`](docs/alert-rules.md) — rule object, severities, and every `condition` variant with parameters.
+
 ### Filtering
 
 Press `/` to enter filter mode, then type:
@@ -163,7 +166,6 @@ Some operations may require elevated permissions:
 - Stack sampling on Linux (perf/eBPF)
 - Process tree view
 - Export to JSON/CSV
-- Configuration file support
 - Container awareness
 - Language-specific detection (Node.js, Python, Java)
 - Network activity sparklines

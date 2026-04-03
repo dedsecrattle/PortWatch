@@ -136,4 +136,11 @@ mod tests {
             AlertCondition::UnknownProcessListening
         ));
     }
+
+    #[test]
+    fn examples_alerts_example_parses() {
+        let s = include_str!("../../examples/alerts.example.json");
+        let cfg: AlertConfig = serde_json::from_str(s).expect("examples/alerts.example.json");
+        assert!(!cfg.rules.is_empty());
+    }
 }

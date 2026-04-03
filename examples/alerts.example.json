@@ -1,0 +1,97 @@
+{
+  "rules": [
+    {
+      "id": "example-port-opened",
+      "name": "Notify when port 8080 starts listening",
+      "condition": {
+        "type": "PortOpened",
+        "params": {
+          "port": 8080
+        }
+      },
+      "enabled": true,
+      "severity": "Warning",
+      "cooldown_seconds": 120
+    },
+    {
+      "id": "example-port-closed",
+      "name": "Notify when port 443 stops listening",
+      "condition": {
+        "type": "PortClosed",
+        "params": {
+          "port": 443
+        }
+      },
+      "enabled": false,
+      "severity": "Info",
+      "cooldown_seconds": 60
+    },
+    {
+      "id": "example-port-range",
+      "name": "Activity in privileged port range",
+      "condition": {
+        "type": "PortRangeActivity",
+        "params": {
+          "start_port": 1,
+          "end_port": 1024
+        }
+      },
+      "enabled": true,
+      "severity": "Warning",
+      "cooldown_seconds": 300
+    },
+    {
+      "id": "example-external",
+      "name": "Non-local remote addresses (regex)",
+      "condition": {
+        "type": "ExternalConnection",
+        "params": {
+          "ip_pattern": "^(?!127\\.).+",
+          "exclude_private": true
+        }
+      },
+      "enabled": true,
+      "severity": "Info",
+      "cooldown_seconds": 60
+    },
+    {
+      "id": "example-cpu",
+      "name": "High CPU for matching process name",
+      "condition": {
+        "type": "ProcessCpuThreshold",
+        "params": {
+          "process_pattern": "node|python",
+          "threshold_percent": 80.0
+        }
+      },
+      "enabled": true,
+      "severity": "Critical",
+      "cooldown_seconds": 120
+    },
+    {
+      "id": "example-memory",
+      "name": "High RSS for matching process name",
+      "condition": {
+        "type": "ProcessMemoryThreshold",
+        "params": {
+          "process_pattern": "java",
+          "threshold_mb": 2048
+        }
+      },
+      "enabled": true,
+      "severity": "Warning",
+      "cooldown_seconds": 180
+    },
+    {
+      "id": "example-unknown-listener",
+      "name": "Unknown process listening (evaluator support may vary)",
+      "condition": {
+        "type": "UnknownProcessListening",
+        "params": null
+      },
+      "enabled": false,
+      "severity": "Info",
+      "cooldown_seconds": 60
+    }
+  ]
+}
