@@ -134,10 +134,10 @@ impl PortRecord {
         
         // Match PID (only convert to string if filter could be numeric)
         if let Some(pid) = self.pid {
-            if filter.chars().all(|c| c.is_ascii_digit()) {
-                if pid.to_string().contains(filter) {
-                    return true;
-                }
+            if filter.chars().all(|c| c.is_ascii_digit())
+                && pid.to_string().contains(filter)
+            {
+                return true;
             }
         }
         

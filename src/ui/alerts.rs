@@ -72,13 +72,11 @@ pub fn render(f: &mut Frame, area: Rect, state: &AppState, theme: &Theme) {
                 let mut current_line = String::new();
                 
                 for word in words {
-                    if current_line.len() + word.len() + 1 > max_width {
-                        if !current_line.is_empty() {
-                            all_lines.push(Line::from(
-                                Span::styled(format!("  {}", current_line), theme.normal)
-                            ));
-                            current_line.clear();
-                        }
+                    if current_line.len() + word.len() + 1 > max_width && !current_line.is_empty() {
+                        all_lines.push(Line::from(
+                            Span::styled(format!("  {}", current_line), theme.normal)
+                        ));
+                        current_line.clear();
                     }
                     
                     if !current_line.is_empty() {

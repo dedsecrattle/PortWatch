@@ -38,14 +38,17 @@ pub fn render(f: &mut Frame, area: Rect, state: &AppState, event_handler: &Event
     };
 
     let content = if let Some(ref msg) = state.status_message {
-        Line::from(vec![
-            vec![
-                Span::styled("● ", theme.listen),
-                Span::styled(msg, theme.footer_text),
-                Span::styled(" | ", theme.footer_text),
-            ],
-            keybindings,
-        ].concat())
+        Line::from(
+            [
+                vec![
+                    Span::styled("● ", theme.listen),
+                    Span::styled(msg, theme.footer_text),
+                    Span::styled(" | ", theme.footer_text),
+                ],
+                keybindings,
+            ]
+            .concat(),
+        )
     } else {
         Line::from(keybindings)
     };

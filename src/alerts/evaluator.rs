@@ -72,30 +72,31 @@ impl AlertEvaluator {
         rule: &AlertRule,
         ports: &[PortRecord],
     ) -> Option<Alert> {
-        match &rule.condition {
-            AlertCondition::ExternalConnection { ip_pattern, exclude_private } => {
-                let pattern = Regex::new(ip_pattern).ok()?;
-                
-                for port in ports {
-                    if let Some(ref remote_addr) = port.remote_addr {
-                        if *exclude_private && Self::is_private_ip(remote_addr) {
-                            continue;
-                        }
-                        
-                        if pattern.is_match(remote_addr) {
-                            return Some(Alert::new(
-                                rule.id.clone(),
-                                format!(
-                                    "External connection to {} on port {}",
-                                    remote_addr, port.local_port
-                                ),
-                                rule.severity,
-                            ));
-                        }
+        if let AlertCondition::ExternalConnection {
+            ip_pattern,
+            exclude_private,
+        } = &rule.condition
+        {
+            let pattern = Regex::new(ip_pattern).ok()?;
+
+            for port in ports {
+                if let Some(ref remote_addr) = port.remote_addr {
+                    if *exclude_private && Self::is_private_ip(remote_addr) {
+                        continue;
+                    }
+
+                    if pattern.is_match(remote_addr) {
+                        return Some(Alert::new(
+                            rule.id.clone(),
+                            format!(
+                                "External connection to {} on port {}",
+                                remote_addr, port.local_port
+                            ),
+                            rule.severity,
+                        ));
                     }
                 }
             }
-            _ => {}
         }
         None
     }

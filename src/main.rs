@@ -1,13 +1,14 @@
 mod alerts;
 mod app;
 mod backends;
+mod daemon;
 mod events;
 mod models;
 mod ui;
 
 use anyhow::Result;
 use app::AppState;
-use clap::Parser;
+use clap::{Parser, Subcommand};
 use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
@@ -18,9 +19,38 @@ use std::io;
 use std::time::{Duration, Instant};
 
 #[derive(Parser, Debug)]
-#[command(name = "portscope")]
+#[command(name = "portwatch")]
 #[command(author, version, about = "A cross-platform TUI for monitoring ports and managing processes", long_about = None)]
-struct Args {
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
+    #[command(flatten)]
+    tui: TuiArgs,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    /// Run alert monitoring without the TUI (notifications still fire)
+    Daemon {
+        #[arg(
+            short,
+            long,
+            default_value_t = 2000,
+            help = "Polling interval in milliseconds"
+        )]
+        interval_ms: u64,
+
+        #[arg(
+            long,
+            help = "Reload alerts.json from disk on every poll (picks up edits without restart)"
+        )]
+        watch_config: bool,
+    },
+}
+
+#[derive(Parser, Debug)]
+struct TuiArgs {
     #[arg(short, long, default_value_t = 2000, help = "Auto-refresh interval in milliseconds")]
     refresh_interval: u64,
 
@@ -29,7 +59,20 @@ struct Args {
 }
 
 fn main() -> Result<()> {
-    let args = Args::parse();
+    let cli = Cli::parse();
+
+    if let Some(Commands::Daemon {
+        interval_ms,
+        watch_config,
+    }) = cli.command
+    {
+        return daemon::run_daemon_loop(
+            std::time::Duration::from_millis(interval_ms),
+            watch_config,
+        );
+    }
+
+    let args = cli.tui;
 
     enable_raw_mode()?;
     let mut stdout = io::stdout();
@@ -53,7 +96,7 @@ fn main() -> Result<()> {
 
 fn run_app<B: ratatui::backend::Backend>(
     terminal: &mut Terminal<B>,
-    args: Args,
+    args: TuiArgs,
 ) -> Result<()> {
     let mut state = AppState::new();
     let mut event_handler = EventHandler::new();

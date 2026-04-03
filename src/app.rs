@@ -1,4 +1,4 @@
-use crate::alerts::{AlertEvaluator, AlertManager, Notifier};
+use crate::alerts::{run_alert_cycle, AlertManager, Notifier};
 use crate::backends::Backend;
 use crate::events::Action;
 use crate::models::{PortRecord, ProcessDetails};
@@ -98,14 +98,7 @@ impl AppState {
     }
 
     fn evaluate_alerts(&mut self, current_ports: &[PortRecord]) {
-        let enabled_rules: Vec<_> = self
-            .alert_manager
-            .get_enabled_rules()
-            .into_iter()
-            .cloned()
-            .collect();
-
-        let needs_metrics = enabled_rules.iter().any(|rule| {
+        let needs_metrics = self.alert_manager.get_enabled_rules().iter().any(|rule| {
             matches!(
                 rule.condition,
                 crate::alerts::AlertCondition::ProcessCpuThreshold { .. }
@@ -117,48 +110,22 @@ impl AppState {
             self.update_process_metrics(current_ports);
         }
 
-        for rule in enabled_rules {
-            if !self
-                .alert_manager
-                .can_trigger(&rule.id, rule.cooldown_seconds)
-            {
-                continue;
-            }
+        let triggered = run_alert_cycle(
+            &mut self.alert_manager,
+            &self.notifier,
+            &self.previous_ports,
+            current_ports,
+            &self.cpu_usage,
+            &self.memory_usage,
+        );
 
-            let alert = match &rule.condition {
-                crate::alerts::AlertCondition::PortOpened { .. }
-                | crate::alerts::AlertCondition::PortClosed { .. }
-                | crate::alerts::AlertCondition::PortRangeActivity { .. } => {
-                    AlertEvaluator::evaluate_port_changes(
-                        &rule,
-                        &self.previous_ports,
-                        current_ports,
-                    )
-                }
-                crate::alerts::AlertCondition::ExternalConnection { .. } => {
-                    AlertEvaluator::evaluate_connections(&rule, current_ports)
-                }
-                crate::alerts::AlertCondition::ProcessCpuThreshold { .. } => {
-                    AlertEvaluator::evaluate_process_cpu(&rule, current_ports, &self.cpu_usage)
-                }
-                crate::alerts::AlertCondition::ProcessMemoryThreshold { .. } => {
-                    AlertEvaluator::evaluate_process_memory(
-                        &rule,
-                        current_ports,
-                        &self.memory_usage,
-                    )
-                }
-                _ => None,
-            };
-
-            if let Some(alert) = alert {
-                let message = alert.message.clone();
-                self.status_message = Some(format!("Alert: {}", message));
-                if let Err(e) = self.notifier.send(&alert) {
-                    self.status_message =
-                        Some(format!("Alert: {} (desktop notify failed: {})", message, e));
-                }
-                self.alert_manager.trigger_alert(alert);
+        if let Some(last) = triggered.last() {
+            self.status_message = Some(format!("Alert: {}", last.message));
+            if let Err(e) = &last.notify_result {
+                self.status_message = Some(format!(
+                    "Alert: {} (desktop notify failed: {})",
+                    last.message, e
+                ));
             }
         }
     }

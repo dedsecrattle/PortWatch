@@ -9,7 +9,7 @@ use ratatui::{
     Frame,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct AlertRulesPanel {
     pub open: bool,
     pub selected: usize,
@@ -17,18 +17,6 @@ pub struct AlertRulesPanel {
     /// Which field is focused in the form (0..)
     pub form_focus: usize,
     pub error: Option<String>,
-}
-
-impl Default for AlertRulesPanel {
-    fn default() -> Self {
-        Self {
-            open: false,
-            selected: 0,
-            form: None,
-            form_focus: 0,
-            error: None,
-        }
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

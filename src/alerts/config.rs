@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct AlertConfig {
     pub rules: Vec<AlertRule>,
 }
@@ -59,12 +59,6 @@ impl AlertConfig {
         Ok(path)
     }
 
-}
-
-impl Default for AlertConfig {
-    fn default() -> Self {
-        Self { rules: Vec::new() }
-    }
 }
 
 #[cfg(test)]
