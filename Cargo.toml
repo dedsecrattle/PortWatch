@@ -1,6 +1,6 @@
 [package]
 name = "portwatch"
-version = "0.1.5"
+version = "0.1.7"
 edition = "2021"
 authors = ["dedsecrattle"]
 description = "A cross-platform TUI for monitoring network ports and managing processes"
