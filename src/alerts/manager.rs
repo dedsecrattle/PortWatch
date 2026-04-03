@@ -1,5 +1,6 @@
-use std::collections::HashMap;
 use chrono::{DateTime, Utc};
+use std::collections::HashMap;
+
 use super::{Alert, AlertRule};
 
 pub struct AlertManager {
@@ -19,8 +20,48 @@ impl AlertManager {
         }
     }
 
+    pub fn set_rules(&mut self, rules: Vec<AlertRule>) {
+        self.rules = rules;
+    }
+
+    pub fn get_rules(&self) -> &[AlertRule] {
+        &self.rules
+    }
+
     pub fn add_rule(&mut self, rule: AlertRule) {
         self.rules.push(rule);
+    }
+
+    pub fn update_rule(&mut self, index: usize, new_rule: AlertRule) -> anyhow::Result<()> {
+        anyhow::ensure!(
+            index < self.rules.len(),
+            "rule index out of range"
+        );
+        let old_id = self.rules[index].id.clone();
+        if old_id != new_rule.id {
+            self.last_triggered.remove(&old_id);
+        }
+        self.rules[index] = new_rule;
+        Ok(())
+    }
+
+    pub fn delete_rule(&mut self, index: usize) -> anyhow::Result<AlertRule> {
+        anyhow::ensure!(
+            index < self.rules.len(),
+            "rule index out of range"
+        );
+        let removed = self.rules.remove(index);
+        self.last_triggered.remove(&removed.id);
+        Ok(removed)
+    }
+
+    pub fn toggle_rule_enabled(&mut self, index: usize) -> anyhow::Result<bool> {
+        anyhow::ensure!(
+            index < self.rules.len(),
+            "rule index out of range"
+        );
+        self.rules[index].enabled = !self.rules[index].enabled;
+        Ok(self.rules[index].enabled)
     }
 
     pub fn get_enabled_rules(&self) -> Vec<&AlertRule> {
@@ -39,7 +80,7 @@ impl AlertManager {
     pub fn trigger_alert(&mut self, alert: Alert) {
         self.last_triggered.insert(alert.rule_id.clone(), alert.timestamp);
         self.alert_history.push(alert);
-        
+
         if self.alert_history.len() > self.max_history {
             self.alert_history.remove(0);
         }

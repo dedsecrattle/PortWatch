@@ -63,6 +63,7 @@ pub fn render_help(f: &mut Frame, theme: &Theme) {
         "",
         "Other:",
         "  a           Toggle alerts panel",
+        "  E           Alert rules editor",
         "  ?           Toggle this help",
         "  q / Ctrl+C  Quit",
         "",
@@ -83,7 +84,7 @@ pub fn render_help(f: &mut Frame, theme: &Theme) {
     f.render_widget(help_paragraph, area);
 }
 
-fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
+pub fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
     let popup_layout = Layout::default()
         .direction(Direction::Vertical)
         .constraints([

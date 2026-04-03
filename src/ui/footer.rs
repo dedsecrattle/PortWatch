@@ -24,6 +24,8 @@ pub fn render(f: &mut Frame, area: Rect, state: &AppState, event_handler: &Event
             Span::styled(" filter  ", theme.footer_text),
             Span::styled("a", theme.footer_key),
             Span::styled(" alerts  ", theme.footer_text),
+            Span::styled("E", theme.footer_key),
+            Span::styled(" rules  ", theme.footer_text),
             Span::styled("k", theme.footer_key),
             Span::styled(" kill  ", theme.footer_text),
             Span::styled("r", theme.footer_key),

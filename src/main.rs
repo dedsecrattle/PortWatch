@@ -12,7 +12,7 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use events::EventHandler;
+use events::{EventHandler, InputContext};
 use ratatui::{backend::CrosstermBackend, Terminal};
 use std::io;
 use std::time::{Duration, Instant};
@@ -74,7 +74,13 @@ fn run_app<B: ratatui::backend::Backend>(
             .checked_sub(last_refresh.elapsed())
             .unwrap_or(Duration::from_millis(100));
 
-        let action = event_handler.next_action(timeout)?;
+        let ctx = InputContext {
+            show_help: state.show_help,
+            alert_rules_open: state.alert_rules.open,
+            alert_rule_form: state.alert_rules.form.is_some(),
+            alert_rule_form_focus: state.alert_rules.form_focus,
+        };
+        let action = event_handler.next_action(timeout, ctx)?;
 
         let should_quit = state.apply_action(action)?;
         if should_quit {

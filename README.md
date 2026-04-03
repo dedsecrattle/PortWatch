@@ -80,8 +80,20 @@ portwatch --filter 3000
 - `K` - Force kill (SIGKILL on Unix, force termination on Windows)
 
 #### Other
+- `a` - Toggle alerts panel (recent fired alerts)
+- `E` - Open alert **rules** editor (add/edit/delete rules; saved to config)
 - `?` - Toggle help screen
 - `q` / `Ctrl+C` - Quit
+
+### Alert rules (config file)
+
+Rules are stored as JSON. The canonical location is:
+
+- **`{config_dir}/portwatch/alerts.json`** where `config_dir` is the platform config directory (e.g. `~/.config` on Linux, `~/Library/Application Support` on macOS, Roaming AppData on Windows).
+
+If an older file exists at **`~/.config/portwatch/alerts.json`**, it is still loaded automatically; **new saves** always write to the canonical path above.
+
+You can edit rules in the TUI with **`E`** (see on-screen hints) or edit the JSON file directly.
 
 ### Filtering
 
