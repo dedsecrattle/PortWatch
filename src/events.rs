@@ -1,4 +1,4 @@
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyModifiers};
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use std::time::Duration;
 
 #[derive(Debug, Clone)]
@@ -34,7 +34,10 @@ impl EventHandler {
     pub fn next_action(&mut self, timeout: Duration) -> anyhow::Result<Action> {
         if event::poll(timeout)? {
             if let Event::Key(key) = event::read()? {
-                return Ok(self.handle_key(key));
+                // Only process key press events, ignore release and repeat to prevent duplicates on Windows
+                if key.kind == KeyEventKind::Press {
+                    return Ok(self.handle_key(key));
+                }
             }
         }
         Ok(Action::None)
