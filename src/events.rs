@@ -13,6 +13,7 @@ pub enum Action {
     UpdateFilter(String),
     ClearFilter,
     ToggleHelp,
+    ToggleAlerts,
     None,
 }
 
@@ -63,6 +64,7 @@ impl EventHandler {
             }
             KeyCode::Esc => Action::ClearFilter,
             KeyCode::Char('?') => Action::ToggleHelp,
+            KeyCode::Char('a') => Action::ToggleAlerts,
             _ => Action::None,
         }
     }

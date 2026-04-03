@@ -3,6 +3,7 @@ mod layout;
 mod ports_table;
 mod details;
 mod footer;
+mod alerts;
 
 pub use theme::Theme;
 use crate::app::AppState;

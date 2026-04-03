@@ -1,6 +1,6 @@
 use crate::app::AppState;
 use crate::events::EventHandler;
-use crate::ui::{details, footer, ports_table, Theme};
+use crate::ui::{alerts, details, footer, ports_table, Theme};
 use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     widgets::{Block, Borders, Paragraph},
@@ -16,16 +16,32 @@ pub fn render_main(f: &mut Frame, state: &AppState, event_handler: &EventHandler
         ])
         .split(f.area());
 
-    let main_chunks = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Percentage(60),
-            Constraint::Percentage(40),
-        ])
-        .split(chunks[0]);
+    if state.show_alerts {
+        let main_chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([
+                Constraint::Percentage(50),
+                Constraint::Percentage(25),
+                Constraint::Percentage(25),
+            ])
+            .split(chunks[0]);
 
-    ports_table::render(f, main_chunks[0], state, theme);
-    details::render(f, main_chunks[1], state, theme);
+        ports_table::render(f, main_chunks[0], state, theme);
+        details::render(f, main_chunks[1], state, theme);
+        alerts::render(f, main_chunks[2], state, theme);
+    } else {
+        let main_chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints([
+                Constraint::Percentage(60),
+                Constraint::Percentage(40),
+            ])
+            .split(chunks[0]);
+
+        ports_table::render(f, main_chunks[0], state, theme);
+        details::render(f, main_chunks[1], state, theme);
+    }
+    
     footer::render(f, chunks[1], state, event_handler, theme);
 }
 
@@ -46,6 +62,7 @@ pub fn render_help(f: &mut Frame, theme: &Theme) {
         "  K           Force kill (SIGKILL)",
         "",
         "Other:",
+        "  a           Toggle alerts panel",
         "  ?           Toggle this help",
         "  q / Ctrl+C  Quit",
         "",
