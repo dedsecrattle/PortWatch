@@ -20,6 +20,8 @@ pub struct Theme {
     pub value: Style,
     pub value_highlight: Style,
     pub status_bar: Style,
+    pub footer_text: Style,
+    pub footer_key: Style,
 }
 
 impl Theme {
@@ -73,7 +75,12 @@ impl Theme {
                 .fg(Color::LightRed)
                 .add_modifier(Modifier::BOLD),
             status_bar: Style::default()
-                .add_modifier(Modifier::REVERSED),
+                .bg(Color::Rgb(0, 0, 0)),
+            footer_text: Style::default()
+                .fg(Color::White),
+            footer_key: Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD),
         }
     }
 }

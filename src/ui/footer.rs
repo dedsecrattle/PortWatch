@@ -11,27 +11,27 @@ use ratatui::{
 pub fn render(f: &mut Frame, area: Rect, state: &AppState, event_handler: &EventHandler, theme: &Theme) {
     let keybindings = if event_handler.is_filter_mode() {
         vec![
-            Span::styled("Filter mode: ", theme.value_highlight),
-            Span::styled("Type to filter | Enter to apply | Esc to cancel", theme.value),
+            Span::styled("Filter mode: ", theme.footer_key),
+            Span::styled("Type to filter | Enter to apply | Esc to cancel", theme.footer_text),
         ]
     } else {
         vec![
-            Span::styled("↑↓", theme.value_highlight),
-            Span::styled(" navigate  ", theme.normal),
-            Span::styled("Enter", theme.value_highlight),
-            Span::styled(" details  ", theme.normal),
-            Span::styled("/", theme.value_highlight),
-            Span::styled(" filter  ", theme.normal),
-            Span::styled("k", theme.value_highlight),
-            Span::styled(" kill  ", theme.normal),
-            Span::styled("K", theme.value_highlight),
-            Span::styled(" force  ", theme.normal),
-            Span::styled("r", theme.value_highlight),
-            Span::styled(" refresh  ", theme.normal),
-            Span::styled("?", theme.value_highlight),
-            Span::styled(" help  ", theme.normal),
-            Span::styled("q", theme.value_highlight),
-            Span::styled(" quit", theme.normal),
+            Span::styled("↑↓", theme.footer_key),
+            Span::styled(" navigate  ", theme.footer_text),
+            Span::styled("Enter", theme.footer_key),
+            Span::styled(" details  ", theme.footer_text),
+            Span::styled("/", theme.footer_key),
+            Span::styled(" filter  ", theme.footer_text),
+            Span::styled("k", theme.footer_key),
+            Span::styled(" kill  ", theme.footer_text),
+            Span::styled("K", theme.footer_key),
+            Span::styled(" force  ", theme.footer_text),
+            Span::styled("r", theme.footer_key),
+            Span::styled(" refresh  ", theme.footer_text),
+            Span::styled("?", theme.footer_key),
+            Span::styled(" help  ", theme.footer_text),
+            Span::styled("q", theme.footer_key),
+            Span::styled(" quit", theme.footer_text),
         ]
     };
 
@@ -39,8 +39,8 @@ pub fn render(f: &mut Frame, area: Rect, state: &AppState, event_handler: &Event
         Line::from(vec![
             vec![
                 Span::styled("● ", theme.listen),
-                Span::styled(msg, theme.value),
-                Span::styled(" | ", theme.normal),
+                Span::styled(msg, theme.footer_text),
+                Span::styled(" | ", theme.footer_text),
             ],
             keybindings,
         ].concat())
