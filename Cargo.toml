@@ -1,14 +1,20 @@
 [package]
-name = "portscope"
+name = "portwatch"
 version = "0.1.0"
 edition = "2021"
-authors = ["PortScope Contributors"]
-description = "A cross-platform TUI for monitoring ports and managing processes"
+authors = ["dedsecrattle"]
+description = "A cross-platform TUI for monitoring network ports and managing processes"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/yourusername/portscope"
+repository = "https://github.com/dedsecrattle/PortWatch"
+homepage = "https://github.com/dedsecrattle/PortWatch"
+documentation = "https://docs.rs/portwatch"
+readme = "README.md"
+keywords = ["tui", "network", "ports", "monitoring", "process"]
+categories = ["command-line-utilities", "network-programming", "os"]
+exclude = [".git*", ".windsurf/"]
 
 [[bin]]
-name = "portscope"
+name = "portwatch"
 path = "src/main.rs"
 
 [dependencies]

@@ -1,4 +1,4 @@
-# PortScope
+# PortWatch
 
 A cross-platform TUI (Terminal User Interface) for monitoring network ports and managing processes. Built with Rust for performance and portability.
 
@@ -22,10 +22,10 @@ cargo install --path .
 ### Build from Repository
 
 ```bash
-git clone <repository-url>
-cd port-watch
+git clone https://github.com/dedsecrattle/PortWatch
+cd PortWatch
 cargo build --release
-./target/release/portscope
+./target/release/portwatch
 ```
 
 ## Usage
@@ -33,14 +33,14 @@ cargo build --release
 ### Basic Usage
 
 ```bash
-# Start PortScope with default settings
-portscope
+# Start PortWatch with default settings
+portwatch
 
 # Set custom refresh interval (in milliseconds)
-portscope --refresh-interval 5000
+portwatch --refresh-interval 5000
 
 # Start with a filter applied
-portscope --filter 3000
+portwatch --filter 3000
 ```
 
 ### Keyboard Shortcuts
@@ -88,7 +88,7 @@ Press `Enter` to apply or `Esc` to cancel.
 
 ## Architecture
 
-PortScope uses a modular architecture with platform-specific backends:
+PortWatch uses a modular architecture with platform-specific backends:
 
 ```
 src/
