@@ -24,55 +24,56 @@ pub struct Theme {
 
 impl Theme {
     pub fn new() -> Self {
+        // Use terminal's default colors for better light/dark mode compatibility
+        // These ANSI colors adapt to the terminal's color scheme
         Self {
-            normal: Style::default().fg(Color::Rgb(200, 200, 200)),
+            normal: Style::default(),
             selected: Style::default()
-                .fg(Color::Rgb(0, 0, 0))
-                .bg(Color::Rgb(0, 255, 255))
+                .bg(Color::Cyan)
+                .fg(Color::Black)
                 .add_modifier(Modifier::BOLD),
             header: Style::default()
-                .fg(Color::Rgb(255, 215, 0))
+                .fg(Color::Yellow)
                 .add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
-            border: Style::default().fg(Color::Rgb(100, 100, 100)),
+            border: Style::default().fg(Color::DarkGray),
             border_focused: Style::default()
-                .fg(Color::Rgb(0, 255, 255))
+                .fg(Color::Cyan)
                 .add_modifier(Modifier::BOLD),
             title: Style::default()
-                .fg(Color::Rgb(138, 43, 226))
+                .fg(Color::Magenta)
                 .add_modifier(Modifier::BOLD),
             listen: Style::default()
-                .fg(Color::Rgb(50, 205, 50))
+                .fg(Color::Green)
                 .add_modifier(Modifier::BOLD),
             established: Style::default()
-                .fg(Color::Rgb(0, 191, 255))
+                .fg(Color::Blue)
                 .add_modifier(Modifier::BOLD),
             other_state: Style::default()
-                .fg(Color::Rgb(255, 165, 0)),
+                .fg(Color::Yellow),
             tcp: Style::default()
-                .fg(Color::Rgb(135, 206, 250)),
+                .fg(Color::Cyan),
             udp: Style::default()
-                .fg(Color::Rgb(255, 182, 193)),
+                .fg(Color::LightMagenta),
             port: Style::default()
-                .fg(Color::Rgb(255, 255, 102))
+                .fg(Color::LightYellow)
                 .add_modifier(Modifier::BOLD),
             pid: Style::default()
-                .fg(Color::Rgb(173, 216, 230)),
+                .fg(Color::LightBlue),
             process_name: Style::default()
-                .fg(Color::Rgb(255, 192, 203))
+                .fg(Color::LightMagenta)
                 .add_modifier(Modifier::BOLD),
             address: Style::default()
-                .fg(Color::Rgb(152, 251, 152)),
+                .fg(Color::LightGreen),
             label: Style::default()
-                .fg(Color::Rgb(255, 215, 0))
+                .fg(Color::Yellow)
                 .add_modifier(Modifier::BOLD),
             value: Style::default()
-                .fg(Color::Rgb(173, 216, 230)),
+                .fg(Color::LightCyan),
             value_highlight: Style::default()
-                .fg(Color::Rgb(255, 105, 180))
+                .fg(Color::LightRed)
                 .add_modifier(Modifier::BOLD),
             status_bar: Style::default()
-                .fg(Color::Rgb(255, 255, 255))
-                .bg(Color::Rgb(60, 60, 60)),
+                .add_modifier(Modifier::REVERSED),
         }
     }
 }
