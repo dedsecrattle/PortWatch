@@ -15,7 +15,23 @@ impl Notifier {
             return Ok(());
         }
 
-        #[cfg(not(target_os = "macos"))]
+        // Windows: notify-rust uses the WinRT backend; `.urgency()` exists only on Freedesktop (Linux, etc.).
+        #[cfg(target_os = "windows")]
+        {
+            let summary = match alert.severity {
+                AlertSeverity::Info => "PortWatch - Info",
+                AlertSeverity::Warning => "PortWatch - Warning",
+                AlertSeverity::Critical => "PortWatch - Critical",
+            };
+
+            Notification::new()
+                .summary(summary)
+                .body(&alert.message)
+                .timeout(Timeout::Milliseconds(5000))
+                .show()?;
+        }
+
+        #[cfg(all(not(target_os = "macos"), not(target_os = "windows")))]
         {
             let (summary, urgency) = match alert.severity {
                 AlertSeverity::Info => ("PortWatch - Info", notify_rust::Urgency::Low),
