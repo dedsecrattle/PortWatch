@@ -6,6 +6,12 @@
 
 A cross-platform TUI (Terminal User Interface) for monitoring network ports and managing processes. Built with Rust for performance and portability.
 
+<img width="1512" height="831" alt="image" src="https://github.com/user-attachments/assets/97bf7fdb-6964-44fe-97fb-376dc1cb81be" />
+
+
+<img width="1505" height="830" alt="image" src="https://github.com/user-attachments/assets/71505f48-eee0-4083-9bcc-37cfe7201adc" />
+
+
 ## Features
 
 - 🔍 **Real-time Port Monitoring** - View all listening and established connections
