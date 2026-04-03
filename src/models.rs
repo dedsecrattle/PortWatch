@@ -75,64 +75,75 @@ impl PortRecord {
         
         let filter_lower = filter.to_lowercase();
         
-        // Match port number (exact or partial)
+        // Helper function for case-insensitive contains without allocation
+        let contains_ignore_case = |haystack: &str, needle: &str| -> bool {
+            haystack.to_lowercase().contains(needle)
+        };
+        
+        // Match port number (exact match first - most common use case)
         if let Ok(port) = filter.parse::<u16>() {
             if self.local_port == port {
                 return true;
             }
+            if let Some(remote_port) = self.remote_port {
+                if remote_port == port {
+                    return true;
+                }
+            }
         }
         
-        // Partial match on port number as string
-        if self.local_port.to_string().contains(&filter_lower) {
-            return true;
-        }
-        
-        // Match local address
-        if self.local_addr.to_lowercase().contains(&filter_lower) {
+        // Match local address (no allocation needed if already lowercase)
+        if contains_ignore_case(&self.local_addr, &filter_lower) {
             return true;
         }
         
         // Match remote address
         if let Some(ref addr) = self.remote_addr {
-            if addr.to_lowercase().contains(&filter_lower) {
+            if contains_ignore_case(addr, &filter_lower) {
                 return true;
             }
         }
         
-        // Match remote port
-        if let Some(port) = self.remote_port {
-            if port.to_string().contains(&filter_lower) {
-                return true;
+        // Match protocol (TCP/UDP - short strings, check directly)
+        match self.protocol {
+            Protocol::Tcp if filter_lower.contains("tcp") => return true,
+            Protocol::Udp if filter_lower.contains("udp") => return true,
+            _ => {}
+        }
+        
+        // Match state (common states optimized)
+        match self.state {
+            ConnectionState::Listen if filter_lower.contains("listen") => return true,
+            ConnectionState::Established if filter_lower.contains("establish") => return true,
+            ConnectionState::CloseWait if filter_lower.contains("close") || filter_lower.contains("wait") => return true,
+            ConnectionState::TimeWait if filter_lower.contains("time") || filter_lower.contains("wait") => return true,
+            _ => {
+                // Fallback for other states
+                if contains_ignore_case(&self.state.to_string(), &filter_lower) {
+                    return true;
+                }
             }
-        }
-        
-        // Match protocol
-        if self.protocol.to_string().to_lowercase().contains(&filter_lower) {
-            return true;
-        }
-        
-        // Match state
-        if self.state.to_string().to_lowercase().contains(&filter_lower) {
-            return true;
         }
         
         // Match process name
         if let Some(ref name) = self.process_name {
-            if name.to_lowercase().contains(&filter_lower) {
+            if contains_ignore_case(name, &filter_lower) {
                 return true;
             }
         }
         
-        // Match PID
+        // Match PID (only convert to string if filter could be numeric)
         if let Some(pid) = self.pid {
-            if pid.to_string().contains(&filter_lower) {
-                return true;
+            if filter.chars().all(|c| c.is_ascii_digit()) {
+                if pid.to_string().contains(filter) {
+                    return true;
+                }
             }
         }
         
         // Match user
         if let Some(ref user) = self.user {
-            if user.to_lowercase().contains(&filter_lower) {
+            if contains_ignore_case(user, &filter_lower) {
                 return true;
             }
         }
@@ -140,7 +151,7 @@ impl PortRecord {
         // Match executable path
         if let Some(ref exe) = self.exe {
             if let Some(exe_str) = exe.to_str() {
-                if exe_str.to_lowercase().contains(&filter_lower) {
+                if contains_ignore_case(exe_str, &filter_lower) {
                     return true;
                 }
             }
@@ -148,8 +159,21 @@ impl PortRecord {
         
         // Match command line arguments
         for arg in &self.cmdline {
-            if arg.to_lowercase().contains(&filter_lower) {
+            if contains_ignore_case(arg, &filter_lower) {
                 return true;
+            }
+        }
+        
+        // Partial match on port numbers as string (less common, check last)
+        if filter.chars().any(|c| c.is_ascii_digit()) {
+            let local_port_str = self.local_port.to_string();
+            if local_port_str.contains(&filter_lower) {
+                return true;
+            }
+            if let Some(port) = self.remote_port {
+                if port.to_string().contains(&filter_lower) {
+                    return true;
+                }
             }
         }
         
