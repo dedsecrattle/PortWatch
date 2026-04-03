@@ -114,7 +114,7 @@ impl LinuxPortBackend {
             let inode_str = parts[9];
 
             let (local_addr, local_port) = Self::parse_hex_addr(local).unwrap_or(("0.0.0.0".to_string(), 0));
-            let (remote_addr, remote_port) = Self::parse_hex_addr(remote).unwrap_or(("0.0.0.0".to_string(), 0));
+            let remote_parsed = Self::parse_hex_addr(remote).ok();
 
             let state = if protocol == Protocol::Tcp {
                 Self::parse_tcp_state(state_hex)
@@ -147,8 +147,8 @@ impl LinuxPortBackend {
                 protocol,
                 local_addr,
                 local_port,
-                remote_addr,
-                remote_port,
+                remote_addr: remote_parsed.as_ref().map(|(addr, _)| addr.clone()),
+                remote_port: remote_parsed.map(|(_, port)| port),
                 state,
                 pid,
                 process_name,
