@@ -1,4 +1,4 @@
-use super::{AlertCondition, AlertRule, AlertSeverity};
+use super::AlertRule;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -23,39 +23,33 @@ impl AlertConfig {
     }
 
     fn config_path() -> Result<PathBuf> {
-        let config_dir = dirs::config_dir()
-            .ok_or_else(|| anyhow::anyhow!("Could not find config directory"))?;
-        Ok(config_dir.join("portwatch").join("alerts.json"))
-    }
+        // Prefer the traditional XDG-like path on all platforms.
+        // On macOS this intentionally differs from `dirs::config_dir()` (which is
+        // typically `~/Library/Application Support`).
+        let home_dir = dirs::home_dir()
+            .ok_or_else(|| anyhow::anyhow!("Could not find home directory"))?;
+        let preferred = home_dir.join(".config").join("portwatch").join("alerts.json");
 
-    pub fn default_rules() -> Vec<AlertRule> {
-        vec![
-            AlertRule::new(
-                "privileged-port".to_string(),
-                "Privileged Port Opened".to_string(),
-                AlertCondition::PortRangeActivity {
-                    start_port: 1,
-                    end_port: 1024,
-                },
-                AlertSeverity::Warning,
-            ),
-            AlertRule::new(
-                "external-connection".to_string(),
-                "External Connection Detected".to_string(),
-                AlertCondition::ExternalConnection {
-                    ip_pattern: ".*".to_string(),
-                    exclude_private: true,
-                },
-                AlertSeverity::Info,
-            ),
-        ]
+        // Backwards-compatible fallback: if the old location exists, use it.
+        let fallback = dirs::config_dir()
+            .map(|d| d.join("portwatch").join("alerts.json"));
+
+        if preferred.exists() {
+            return Ok(preferred);
+        }
+
+        if let Some(fallback) = fallback {
+            if fallback.exists() {
+                return Ok(fallback);
+            }
+        }
+
+        Ok(preferred)
     }
 }
 
 impl Default for AlertConfig {
     fn default() -> Self {
-        Self {
-            rules: Self::default_rules(),
-        }
+        Self { rules: Vec::new() }
     }
 }

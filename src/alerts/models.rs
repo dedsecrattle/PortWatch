@@ -65,21 +65,3 @@ impl Alert {
         }
     }
 }
-
-impl AlertRule {
-    pub fn new(
-        id: String,
-        name: String,
-        condition: AlertCondition,
-        severity: AlertSeverity,
-    ) -> Self {
-        Self {
-            id,
-            name,
-            condition,
-            enabled: true,
-            severity,
-            cooldown_seconds: 60,
-        }
-    }
-}

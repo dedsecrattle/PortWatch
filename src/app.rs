@@ -126,8 +126,14 @@ impl AppState {
             };
 
             if let Some(alert) = alert {
-                self.status_message = Some(format!("Alert: {}", alert.message));
-                let _ = self.notifier.send(&alert);
+                let message = alert.message.clone();
+                self.status_message = Some(format!("Alert: {}", message));
+                if let Err(e) = self.notifier.send(&alert) {
+                    self.status_message = Some(format!(
+                        "Alert: {} (desktop notify failed: {})",
+                        message, e
+                    ));
+                }
                 self.alert_manager.trigger_alert(alert);
             }
         }
