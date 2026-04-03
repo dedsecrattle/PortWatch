@@ -1,10 +1,14 @@
-# PortWatch
+<div align="center">
+  <img src="assets/logo.png" alt="PortWatch Logo" width="200"/>
+  
+  # PortWatch
 
-[![Crates.io](https://img.shields.io/crates/v/portwatch.svg)](https://crates.io/crates/portwatch)
-[![License](https://img.shields.io/crates/l/portwatch.svg)](https://github.com/dedsecrattle/PortWatch#license)
-[![Downloads](https://img.shields.io/crates/d/portwatch.svg)](https://crates.io/crates/portwatch)
+  [![Crates.io](https://img.shields.io/crates/v/portwatch.svg)](https://crates.io/crates/portwatch)
+  [![License](https://img.shields.io/crates/l/portwatch.svg)](https://github.com/dedsecrattle/PortWatch#license)
+  [![Downloads](https://img.shields.io/crates/d/portwatch.svg)](https://crates.io/crates/portwatch)
 
-A cross-platform TUI (Terminal User Interface) for monitoring network ports and managing processes. Built with Rust for performance and portability.
+  A cross-platform TUI (Terminal User Interface) for monitoring network ports and managing processes. Built with Rust for performance and portability.
+</div>
 
 <img width="1512" height="831" alt="image" src="https://github.com/user-attachments/assets/97bf7fdb-6964-44fe-97fb-376dc1cb81be" />
 
