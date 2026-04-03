@@ -3,7 +3,6 @@ use crate::models::{ConnectionState, PortRecord, ProcessDetails, Protocol};
 use anyhow::{Context, Result};
 use std::collections::HashMap;
 use std::fs;
-use std::path::PathBuf;
 use sysinfo::{ProcessesToUpdate, System};
 
 pub struct LinuxPortBackend {
@@ -115,7 +114,7 @@ impl LinuxPortBackend {
             let inode_str = parts[9];
 
             let (local_addr, local_port) = Self::parse_hex_addr(local).unwrap_or(("0.0.0.0".to_string(), 0));
-            let (remote_addr, remote_port) = Self::parse_hex_addr(remote).ok();
+            let (remote_addr, remote_port) = Self::parse_hex_addr(remote).unwrap_or(("0.0.0.0".to_string(), 0));
 
             let state = if protocol == Protocol::Tcp {
                 Self::parse_tcp_state(state_hex)
